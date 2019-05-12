@@ -9,6 +9,8 @@
 #include <sys/time.h>
 
 static const char *dirpath = "/home/ismail";
+char hapus[1000][1000];
+int i=0;
 
 void listdir(const char *name)
 {
@@ -39,6 +41,9 @@ void listdir(const char *name)
 					memset(fileo, '\0', sizeof(fileo));
 					sprintf(fileo, "%s/%s", name, entry->d_name);
 
+					strcpy(hapus[i], file);
+					i++;
+
 					pid_t child_id;
     				child_id = fork();
 					if(child_id == 0){
@@ -53,28 +58,9 @@ void listdir(const char *name)
 }
 
 void xmp_destroy(void *private_data){
-	char file[1000];
-	DIR *dir;
-    struct dirent *entry;
-	memset(file, '\0', sizeof(file));
-
-    if (!(dir = opendir(dirpath)))
-        return;
-
-    while ((entry = readdir(dir)) != NULL) {
-        if (entry->d_type != 4) {
-            char *ext, c = '.';
-            ext = strrchr(entry->d_name, c);
-            
-            if(ext != NULL){
-                if(strcmp(ext, ".mp3") == 0){
-					sprintf(file, "%s/%s", dirpath, entry->d_name);
-                    remove(file);
-                }    
-            }            
-        }
-    }
-    closedir(dir);
+	for(int j=0; j<i; j++){
+		remove(hapus[j]);
+	}
 }
 
 static int xmp_getattr(const char *path, struct stat *stbuf)

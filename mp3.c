@@ -20,6 +20,7 @@ unsigned char *buffer;
 ao_device *dev;
 int key=0;
 char list[1000][1000];
+char playlist[1000][10000];
 int i=0;
 int no=0;
 
@@ -127,7 +128,6 @@ void *putar(void *args){
     mpg123_delete(mh);
     mpg123_exit();
     ao_shutdown();
-    printf("berhasil");
 }
 
 int main(int argc, char *argv[])
@@ -149,8 +149,9 @@ int main(int argc, char *argv[])
             
             if(strcmp(dir->d_name, ".")!=0 && strcmp(dir->d_name, "..")!=0){
                 strcpy(list[i], nama);
+                strcpy(playlist[i], dir->d_name);
                 i++;
-                printf("[-] %s\n", dir->d_name);
+                // printf("[-] %s\n", dir->d_name);
             }
         }
         closedir(d);
@@ -163,8 +164,14 @@ int main(int argc, char *argv[])
     pthread_create( &thread1, NULL, &putar, NULL);
 
     while(1){
-
+        for(int j=0; j<i; j++){
+            if(j==no)
+                printf("[*] %s\n", playlist[j]);
+            else
+                printf("[-] %s\n", playlist[j]);
+        }
+        sleep(1);
+        system("clear");
     }
-
     return 0;
 }
